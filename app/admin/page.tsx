@@ -53,9 +53,16 @@ export default function AdminPage() {
 
   /* Check existing session */
   useEffect(() => {
-    fetch("/api/data").then((r) => {
-      if (r.ok) r.json().then((d) => { setData(d); setAuthed(true); });
-    });
+    fetch("/api/auth")
+      .then((r) => r.json().catch(() => ({ authed: false })))
+      .then((res) => {
+        if (res.authed) {
+          fetch("/api/data").then((r) => {
+            if (r.ok) r.json().then((d) => { setData(d); setAuthed(true); });
+          });
+        }
+      })
+      .catch(() => {});
   }, []);
 
   /* Login */

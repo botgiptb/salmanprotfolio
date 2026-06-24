@@ -19,6 +19,12 @@ export async function POST(req: Request) {
   return NextResponse.json({ ok: true });
 }
 
+export async function GET() {
+  const cookieStore = await cookies();
+  const authed = cookieStore.get("admin_session")?.value === "authenticated";
+  return NextResponse.json({ authed });
+}
+
 export async function DELETE() {
   const cookieStore = await cookies();
   cookieStore.delete("admin_session");
