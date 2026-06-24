@@ -53,11 +53,11 @@ export default function AdminPage() {
 
   /* Check existing session */
   useEffect(() => {
-    fetch("/api/auth")
+    fetch("/api/auth", { credentials: "same-origin" })
       .then((r) => r.json().catch(() => ({ authed: false })))
       .then((res) => {
         if (res.authed) {
-          fetch("/api/data").then((r) => {
+          fetch("/api/data", { credentials: "same-origin" }).then((r) => {
             if (r.ok) r.json().then((d) => { setData(d); setAuthed(true); });
           });
         }
@@ -69,9 +69,14 @@ export default function AdminPage() {
   async function login(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true); setAuthErr("");
-    const r = await fetch("/api/auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) });
+    const r = await fetch("/api/auth", { 
+      method: "POST", 
+      headers: { "Content-Type": "application/json" }, 
+      body: JSON.stringify({ password }),
+      credentials: "same-origin"
+    });
     if (r.ok) {
-      const d = await fetch("/api/data").then((r) => r.json());
+      const d = await fetch("/api/data", { credentials: "same-origin" }).then((r) => r.json());
       setData(d); setAuthed(true);
     } else {
       setAuthErr("Incorrect password. Try again.");
@@ -81,7 +86,7 @@ export default function AdminPage() {
 
   /* Logout */
   async function logout() {
-    await fetch("/api/auth", { method: "DELETE" });
+    await fetch("/api/auth", { method: "DELETE", credentials: "same-origin" });
     setAuthed(false); setData(null);
   }
 
@@ -93,7 +98,8 @@ export default function AdminPage() {
       const r = await fetch("/api/data", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        credentials: "same-origin"
       });
       if (r.ok) {
         const resData = await r.json().catch(() => ({}));
