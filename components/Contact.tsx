@@ -28,18 +28,28 @@ export default function Contact() {
     setError("");
 
     try {
-      const res = await fetch("/api/contact", {
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({
+          access_key: "984fae79-60da-409e-938d-10d2637bf65d",
+          name: form.name,
+          email: form.email,
+          subject: `[Portfolio Contact] ${form.subject} from ${form.name}`,
+          message: form.message,
+          from_name: "Salman Studio Portfolio",
+        }),
       });
 
-      if (res.ok) {
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.success) {
         setStatus("done");
         setForm({ name: "", email: "", subject: "VFX Project", message: "" });
       } else {
-        const data = await res.json().catch(() => ({}));
-        setError(data.error || "Failed to send message. Please try again.");
+        setError(data.message || "Failed to send message. Please try again.");
         setStatus("idle");
       }
     } catch (err) {
