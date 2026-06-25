@@ -56,20 +56,6 @@
       "description": "High-contrast commercial edit. Directed the dramatic color grading to emphasize muscle definition, texture of the sportswear, and sunrise lighting highlights."
     },
     {
-      "id": 6,
-      "title": "Cosmic HUD UI System",
-      "category": "Design",
-      "client": "Indie Game Studio",
-      "software": [
-        "Figma",
-        "Illustrator",
-        "After Effects"
-      ],
-      "videoUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800",
-      "description": "Design of an interactive futuristic Heads-Up Display (HUD) system. Includes vector dials, telemetry gauges, and custom motion graphic warning loops."
-    },
-    {
       "id": 7,
       "title": "Synthwave Album Cover",
       "category": "Design",
