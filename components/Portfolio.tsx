@@ -197,8 +197,8 @@ export default function Portfolio() {
                     key={project.id}
                     style={{
                       position: "absolute",
-                      width: "100%",
-                      maxWidth: "720px",
+                      width: isMobile ? "82%" : "100%",
+                      maxWidth: isMobile ? "320px" : "720px",
                       zIndex: styles.zIndex,
                       pointerEvents: styles.pointerEvents,
                     }}
