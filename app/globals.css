@@ -24,6 +24,7 @@ html {
   background-color: #070709;
   color: #f3f4f6;
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {

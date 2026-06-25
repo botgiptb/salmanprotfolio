@@ -165,7 +165,7 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Top bar */}
-      <header className="sticky top-0 z-30 flex items-center justify-between px-6 py-4 bg-[#050507]/95 backdrop-blur border-b border-zinc-900">
+      <header className="sticky top-0 z-30 flex items-center justify-between px-4 py-3 md:px-6 md:py-4 bg-[#050507]/95 backdrop-blur border-b border-zinc-900">
         <div className="flex items-center gap-3">
           <div className="w-7 h-7 rounded-lg bg-brand-purple/25 border border-brand-purple/40 flex items-center justify-center">
             <span className="text-brand-purple font-display font-black text-xs">S</span>
@@ -179,9 +179,9 @@ export default function AdminPage() {
           <button
             onClick={save}
             disabled={saving}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-heading font-black text-xs uppercase tracking-wider transition-all cursor-pointer ${saved ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-brand-cyan/20 text-brand-cyan border border-brand-cyan/30 hover:bg-brand-cyan/30"}`}
+            className={`flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-heading font-black text-[10px] md:text-xs uppercase tracking-wider transition-all cursor-pointer ${saved ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-brand-cyan/20 text-brand-cyan border border-brand-cyan/30 hover:bg-brand-cyan/30"}`}
           >
-            {saved ? <><Check className="w-3.5 h-3.5" />Saved!</> : saving ? "Saving..." : <><Save className="w-3.5 h-3.5" />Save Changes</>}
+            {saved ? <><Check className="w-3 h-3 md:w-3.5 md:h-3.5" />Saved!</> : saving ? "Saving..." : <><Save className="w-3 h-3 md:w-3.5 md:h-3.5" />Save Changes</>}
           </button>
           <button onClick={logout} className="p-2 rounded-lg text-zinc-600 hover:text-zinc-300 hover:bg-zinc-900 transition-all cursor-pointer" title="Logout">
             <LogOut className="w-4 h-4" />
@@ -189,14 +189,14 @@ export default function AdminPage() {
         </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
         {/* Sidebar */}
-        <nav className="w-52 shrink-0 border-r border-zinc-900 pt-6 px-3 space-y-1">
+        <nav className="flex md:flex-col overflow-x-auto md:overflow-x-visible w-full md:w-52 shrink-0 border-b md:border-b-0 md:border-r border-zinc-900 py-3 md:py-6 px-4 md:px-3 gap-2 md:gap-1 scrollbar-none">
           {TABS.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
               onClick={() => setTab(key)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left font-heading font-bold text-xs uppercase tracking-wider transition-all cursor-pointer ${tab === key ? "bg-brand-purple/20 text-brand-purple border border-brand-purple/30" : "text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900"}`}
+              className={`flex items-center gap-2 md:gap-3 px-3 py-2 md:py-2.5 rounded-xl text-left font-heading font-bold text-[10px] md:text-xs uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${tab === key ? "bg-brand-purple/20 text-brand-purple border border-brand-purple/30" : "text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900"}`}
             >
               <Icon className="w-4 h-4" />
               {label}
@@ -205,7 +205,7 @@ export default function AdminPage() {
         </nav>
 
         {/* Panel content */}
-        <main className="flex-1 overflow-y-auto p-6 md:p-8">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8">
           {tab === "portfolio"  && <PortfolioPanel  data={data} setData={setData} />}
           {tab === "services"   && <ServicesPanel   data={data} setData={setData} />}
           {tab === "skills"     && <SkillsPanel     data={data} setData={setData} />}

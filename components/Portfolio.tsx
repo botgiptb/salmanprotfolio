@@ -22,6 +22,14 @@ export default function Portfolio() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     fetch("/api/data", { credentials: "same-origin" })
@@ -70,6 +78,10 @@ export default function Portfolio() {
     const isNext = diff === 1 || (len === 2 && diff === -1 && index !== activeIndex);
     const isPrev = diff === -1 || (len === 2 && diff === 1 && index !== activeIndex);
 
+    const xOffset = isMobile ? "46%" : "52%";
+    const sideScale = isMobile ? 0.78 : 0.82;
+    const sideOpacity = isMobile ? 0.25 : 0.35;
+
     if (isActive) {
       return {
         x: "0%",
@@ -81,18 +93,18 @@ export default function Portfolio() {
       };
     } else if (isNext) {
       return {
-        x: "52%",
-        scale: 0.82,
-        opacity: 0.35,
+        x: xOffset,
+        scale: sideScale,
+        opacity: sideOpacity,
         zIndex: 5,
         rotateY: -20,
         pointerEvents: "none" as const,
       };
     } else if (isPrev) {
       return {
-        x: "-52%",
-        scale: 0.82,
-        opacity: 0.35,
+        x: `-${xOffset}`,
+        scale: sideScale,
+        opacity: sideOpacity,
         zIndex: 5,
         rotateY: 20,
         pointerEvents: "none" as const,
@@ -185,8 +197,8 @@ export default function Portfolio() {
                     key={project.id}
                     style={{
                       position: "absolute",
-                      width: "100%",
-                      maxWidth: "720px",
+                      width: isMobile ? "82%" : "100%",
+                      maxWidth: isMobile ? "320px" : "720px",
                       zIndex: styles.zIndex,
                       pointerEvents: styles.pointerEvents,
                     }}
