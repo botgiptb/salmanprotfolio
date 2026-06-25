@@ -1,22 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Eye, X } from "lucide-react";
+import { Play, Eye, X, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Project {
-  id: number; title: string; category: string; client: string;
-  software: string[]; videoUrl: string; thumbnail: string; description: string;
+  id: number;
+  title: string;
+  category: string;
+  client: string;
+  software: string[];
+  videoUrl: string;
+  thumbnail: string;
+  description: string;
 }
 
 export default function Portfolio() {
-  const [projects, setProjects]     = useState<Project[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [categories, setCategories] = useState<string[]>(["All"]);
   const [activeCategory, setActiveCategory] = useState("All");
-  const [selectedVideo, setSelectedVideo]   = useState<string | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/data")
+    fetch("/api/data", { credentials: "same-origin" })
       .then((r) => r.json())
       .then((d) => {
         setProjects(d.portfolio ?? []);
@@ -29,13 +37,107 @@ export default function Portfolio() {
     activeCategory === "All" ? true : project.category === activeCategory
   );
 
+  // Reset index when changing categories
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [activeCategory]);
+
+  const handleNext = useCallback(() => {
+    if (filteredProjects.length === 0) return;
+    setActiveIndex((prev) => (prev + 1) % filteredProjects.length);
+  }, [filteredProjects]);
+
+  const handlePrev = useCallback(() => {
+    if (filteredProjects.length === 0) return;
+    setActiveIndex((prev) => (prev - 1 + filteredProjects.length) % filteredProjects.length);
+  }, [filteredProjects]);
+
+  const activeProject = filteredProjects[activeIndex];
+
+  const getCardStyles = (index: number) => {
+    const len = filteredProjects.length;
+    if (len === 0) return {};
+
+    let diff = index - activeIndex;
+
+    // Wrap around for circular loop (only if more than 2 items)
+    if (len > 2) {
+      if (diff > len / 2) diff -= len;
+      if (diff < -len / 2) diff += len;
+    }
+
+    const isActive = diff === 0;
+    const isNext = diff === 1 || (len === 2 && diff === -1 && index !== activeIndex);
+    const isPrev = diff === -1 || (len === 2 && diff === 1 && index !== activeIndex);
+
+    if (isActive) {
+      return {
+        x: "0%",
+        scale: 1,
+        opacity: 1,
+        zIndex: 10,
+        rotateY: 0,
+        pointerEvents: "auto" as const,
+      };
+    } else if (isNext) {
+      return {
+        x: "52%",
+        scale: 0.82,
+        opacity: 0.35,
+        zIndex: 5,
+        rotateY: -20,
+        pointerEvents: "none" as const,
+      };
+    } else if (isPrev) {
+      return {
+        x: "-52%",
+        scale: 0.82,
+        opacity: 0.35,
+        zIndex: 5,
+        rotateY: 20,
+        pointerEvents: "none" as const,
+      };
+    } else {
+      return {
+        x: diff > 0 ? "110%" : "-110%",
+        scale: 0.7,
+        opacity: 0,
+        zIndex: 0,
+        rotateY: diff > 0 ? -45 : 45,
+        pointerEvents: "none" as const,
+      };
+    }
+  };
+
   return (
     <section id="portfolio" className="relative py-28 bg-[#070709] px-4 md:px-8 border-t border-dark-border overflow-hidden">
-      {/* Background glow overlay */}
-      <div className="absolute top-1/2 right-0 w-[500px] h-[350px] bg-brand-cyan/5 blur-[120px] pointer-events-none" />
+      
+      {/* Dynamic blurred background glow wash */}
+      {activeProject && (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeProject.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.15 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8 }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] blur-[120px] saturate-200 select-none opacity-15"
+            >
+              <img
+                src={activeProject.thumbnail}
+                alt=""
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      )}
 
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-20">
+        
+        {/* Heading Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
           <div>
             <span className="text-xs md:text-sm font-heading font-black uppercase tracking-widest text-brand-cyan mb-3 block">
               Recent Works
@@ -45,7 +147,7 @@ export default function Portfolio() {
             </h2>
           </div>
 
-          {/* Premium Pill tabs category selector */}
+          {/* Premium category selector */}
           <div className="flex flex-wrap gap-2 mt-8 md:mt-0 bg-zinc-950/80 border border-zinc-800/60 p-1.5 rounded-xl relative z-10">
             {categories.map((category) => (
               <button
@@ -68,82 +170,156 @@ export default function Portfolio() {
           </div>
         </div>
 
-        {/* Portfolio Grid */}
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project) => (
-              <motion.div
-                key={project.id}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="group relative rounded-2xl overflow-hidden glass-panel border border-dark-border shadow-lg flex flex-col justify-between"
-              >
-                {/* Thumbnail Container */}
-                <div className="relative aspect-video w-full overflow-hidden bg-zinc-950">
-                  {/* Image */}
-                  <img
-                    src={project.thumbnail}
-                    alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
+        {/* Cinematic Slider Component */}
+        {filteredProjects.length > 0 ? (
+          <div className="relative w-full overflow-visible">
+            
+            {/* 3D Slider Container */}
+            <div className="relative h-[220px] sm:h-[350px] md:h-[420px] w-full flex items-center justify-center overflow-visible mt-8 [perspective:1200px] [transform-style:preserve-3d]">
+              {filteredProjects.map((project, index) => {
+                const styles = getCardStyles(index);
+                const isActive = index === activeIndex;
 
-                  {/* Glass Color Overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                  {/* Play / View Overlay action details */}
-                  <div
-                    data-cursor={project.videoUrl ? "PLAY" : "VIEW"}
-                    className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4"
+                return (
+                  <motion.div
+                    key={project.id}
+                    style={{
+                      position: "absolute",
+                      width: "100%",
+                      maxWidth: "720px",
+                      zIndex: styles.zIndex,
+                      pointerEvents: styles.pointerEvents,
+                    }}
+                    animate={{
+                      x: styles.x,
+                      scale: styles.scale,
+                      opacity: styles.opacity,
+                      rotateY: styles.rotateY,
+                    }}
+                    transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+                    className="aspect-video rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-950 shadow-[0_20px_50px_rgba(0,0,0,0.7)] group cursor-pointer relative"
+                    onClick={() => {
+                      if (isActive) {
+                        if (project.videoUrl) {
+                          setSelectedVideo(project.videoUrl);
+                        } else {
+                          setSelectedImage(project.thumbnail);
+                        }
+                      } else {
+                        setActiveIndex(index);
+                      }
+                    }}
+                    // Swipe drag handlers
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    onDragEnd={(e, info) => {
+                      const threshold = 55;
+                      if (info.offset.x < -threshold) {
+                        handleNext();
+                      } else if (info.offset.x > threshold) {
+                        handlePrev();
+                      }
+                    }}
                   >
-                    {project.videoUrl ? (
-                      <button
-                        onClick={() => setSelectedVideo(project.videoUrl)}
-                        className="p-3.5 rounded-full bg-brand-purple text-zinc-100 hover:scale-110 shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-transform duration-300 cursor-pointer"
-                        title="Watch project reel"
-                      >
-                        <Play className="w-5 h-5 fill-current text-white" />
-                      </button>
-                    ) : (
-                      <div className="p-3.5 rounded-full bg-zinc-900 border border-zinc-700 text-zinc-100" title="Graphic design work">
-                        <Eye className="w-5 h-5" />
+                    {/* Thumbnail Image */}
+                    <img
+                      src={project.thumbnail}
+                      alt={project.title}
+                      className="w-full h-full object-cover transition-transform duration-700 ease-out select-none"
+                      draggable={false}
+                    />
+
+                    {/* Gloss Color Overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+                    {/* Play / View Badge in Center of Active Slide */}
+                    {isActive && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="p-4 rounded-full bg-brand-purple text-zinc-100 shadow-[0_0_30px_rgba(139,92,246,0.6)] scale-90 group-hover:scale-100 transition-transform duration-300">
+                          {project.videoUrl ? (
+                            <Play className="w-6 h-6 fill-current text-white" />
+                          ) : (
+                            <Eye className="w-6 h-6 text-white" />
+                          )}
+                        </div>
                       </div>
                     )}
-                  </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Slider Navigation Buttons */}
+            {filteredProjects.length > 1 && (
+              <div className="flex items-center justify-center gap-6 mt-8 relative z-20">
+                <button
+                  onClick={handlePrev}
+                  className="p-3 rounded-xl border border-zinc-800 bg-zinc-950/60 hover:bg-zinc-900 text-zinc-400 hover:text-zinc-200 transition-all cursor-pointer hover:border-brand-cyan/40 hover:scale-105"
+                  title="Previous work"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+
+                <div className="font-heading font-bold text-xs uppercase tracking-widest text-zinc-500 min-w-[60px] text-center">
+                  <span className="text-zinc-200">{String(activeIndex + 1).padStart(2, "0")}</span>
+                  <span className="mx-2">/</span>
+                  <span>{String(filteredProjects.length).padStart(2, "0")}</span>
                 </div>
 
-                {/* Content details info */}
-                <div className="p-6 md:p-8 flex flex-col justify-between flex-grow">
-                  <div>
-                    <span className="text-[10px] uppercase font-heading font-black tracking-widest text-brand-cyan mb-2 block">
-                      {project.category} &bull; {project.client}
-                    </span>
-                    <h3 className="text-xl md:text-2xl font-heading font-black text-zinc-100 mb-3 leading-tight group-hover:text-brand-purple transition-colors">
-                      {project.title}
-                    </h3>
-                    <p className="text-zinc-400 text-xs md:text-sm leading-relaxed mb-6">
-                      {project.description}
-                    </p>
-                  </div>
+                <button
+                  onClick={handleNext}
+                  className="p-3 rounded-xl border border-zinc-800 bg-zinc-950/60 hover:bg-zinc-900 text-zinc-400 hover:text-zinc-200 transition-all cursor-pointer hover:border-brand-cyan/40 hover:scale-105"
+                  title="Next work"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            )}
 
-                  {/* Software used badges */}
-                  <div className="flex flex-wrap gap-1.5 pt-4 border-t border-zinc-800/40 mt-auto">
-                    {project.software.map((tool) => (
+            {/* Slide Detail Panel */}
+            {activeProject && (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeProject.id}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                  className="max-w-2xl mx-auto text-center mt-12 relative z-10 px-4"
+                >
+                  <span className="text-[10px] uppercase font-heading font-black tracking-widest text-brand-cyan mb-2.5 block">
+                    {activeProject.category} &bull; {activeProject.client}
+                  </span>
+
+                  <h3 className="text-2xl md:text-4xl font-display font-black text-zinc-100 mb-4 tracking-tight leading-tight">
+                    {activeProject.title}
+                  </h3>
+
+                  <p className="text-zinc-400 text-xs md:text-sm leading-relaxed mb-6 max-w-xl mx-auto">
+                    {activeProject.description}
+                  </p>
+
+                  {/* Software badging */}
+                  <div className="flex flex-wrap justify-center gap-1.5 pt-4 border-t border-zinc-800/40 max-w-md mx-auto">
+                    {activeProject.software.map((tool) => (
                       <span
                         key={tool}
-                        className="px-2 py-0.5 rounded bg-zinc-950 border border-zinc-800/60 text-[9px] font-heading font-semibold text-zinc-400"
+                        className="px-2.5 py-1 rounded-lg bg-zinc-950 border border-zinc-800/60 text-[9px] font-heading font-bold text-zinc-400 tracking-wider"
                       >
                         {tool}
                       </span>
                     ))}
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+                </motion.div>
+              </AnimatePresence>
+            )}
+
+          </div>
+        ) : (
+          <div className="py-20 text-center relative z-10 text-zinc-500 font-heading font-bold text-xs uppercase tracking-widest">
+            No projects found in this category.
+          </div>
+        )}
       </div>
 
       {/* Video Modal Player */}
@@ -154,6 +330,7 @@ export default function Portfolio() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 md:p-8 backdrop-blur-md"
+            onClick={() => setSelectedVideo(null)}
           >
             <motion.div
               initial={{ scale: 0.95, y: 20 }}
@@ -161,18 +338,18 @@ export default function Portfolio() {
               exit={{ scale: 0.95, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 350 }}
               className="relative w-full max-w-5xl aspect-video rounded-2xl overflow-hidden bg-zinc-950 border border-zinc-800 shadow-[0_0_50px_rgba(139,92,246,0.25)]"
+              onClick={(e) => e.stopPropagation()}
             >
               {/* Close Button */}
               <button
                 onClick={() => setSelectedVideo(null)}
-                data-cursor="CLOSE"
                 className="absolute top-4 right-4 z-10 p-2.5 rounded-full bg-black/60 text-zinc-400 hover:text-white hover:bg-black/80 transition-all duration-200 cursor-pointer"
                 aria-label="Close video player"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              {/* Video Player */}
+              {/* Video Frame */}
               <iframe
                 src={`${selectedVideo}?autoplay=1&title=0&byline=0&portrait=0`}
                 className="w-full h-full"
@@ -184,6 +361,46 @@ export default function Portfolio() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Image Lightbox Player */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 md:p-8 backdrop-blur-md"
+            onClick={() => setSelectedImage(null)}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-6 right-6 z-50 p-2.5 rounded-full bg-black/60 text-zinc-400 hover:text-white hover:bg-black/80 transition-all duration-200 cursor-pointer"
+              aria-label="Close image viewer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Lightbox Image Container */}
+            <motion.div
+              initial={{ scale: 0.95, y: 10 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 10 }}
+              transition={{ type: "spring", damping: 25, stiffness: 350 }}
+              className="relative max-w-5xl max-h-[85vh] overflow-hidden rounded-2xl border border-zinc-800 shadow-[0_0_50px_rgba(0,0,0,0.8)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={selectedImage}
+                alt="Enlarged project view"
+                className="w-auto h-auto max-w-full max-h-[85vh] object-contain rounded-2xl select-none"
+                draggable={false}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </section>
   );
 }
