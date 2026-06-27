@@ -320,6 +320,29 @@ function GalleryPanel({ data, setData }: { data: SiteData; setData: (d: SiteData
     setActiveCat(categories[0] ?? "");
   }
 
+  // Rename category
+  function renameCategory(oldCat: string) {
+    const newName = prompt(`Rename category "${oldCat}" to:`, oldCat);
+    if (!newName) return;
+    const v = newName.trim();
+    if (!v || oldCat === v) return;
+    if (gallery.categories.includes(v)) {
+      alert(`A category named "${v}" already exists.`);
+      return;
+    }
+    const categories = gallery.categories.map((c) => c === oldCat ? v : c);
+    const projects   = (gallery.projects ?? []).map((p) =>
+      p.category === oldCat ? { ...p, category: v } : p
+    );
+    setData({
+      ...data,
+      gallery: { categories, projects }
+    });
+    if (activeCat === oldCat) {
+      setActiveCat(v);
+    }
+  }
+
   // Open modal to add a project
   function handleAddProject() {
     setEditingProjectId(null);
@@ -524,6 +547,13 @@ function GalleryPanel({ data, setData }: { data: SiteData; setData: (d: SiteData
               <span className="ml-2 text-[9px] opacity-60">
                 {(gallery.projects ?? []).filter((p) => p.category === cat).length}
               </span>
+            </button>
+            <button
+              onClick={() => renameCategory(cat)}
+              className="p-1.5 rounded-lg text-zinc-700 hover:text-brand-cyan hover:bg-brand-cyan/20 opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+              title={`Rename ${cat}`}
+            >
+              <Pencil className="w-3 h-3" />
             </button>
             <button
               onClick={() => deleteCategory(cat)}
