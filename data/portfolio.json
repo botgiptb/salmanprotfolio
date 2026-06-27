@@ -49,6 +49,19 @@
           "/uploads/1782488111787-Screenshot_2026-06-14_at_3.59.09_PM.png",
           "/uploads/1782488111839-Screenshot_2026-06-19_at_5.25.09_PM.png"
         ]
+      },
+      {
+        "id": 1782554378975,
+        "category": "Logo Branding",
+        "companyName": "bot branding",
+        "description": "this is a description for something to type",
+        "coverImage": "/uploads/1782554307975-peter-thomas-KyQYGNx3YFw-unsplash.jpg",
+        "images": [
+          "/uploads/1782554307975-peter-thomas-KyQYGNx3YFw-unsplash.jpg",
+          "/uploads/1782554308141-musa-ortac-m9Mg60saOeA-unsplash.jpg",
+          "/uploads/1782554308204-IMG-20260620-WA0009.png",
+          "/uploads/1782554308239-ChatGPT_Image_Jun_13__2026__09_38_53_PM.png"
+        ]
       }
     ]
   },
