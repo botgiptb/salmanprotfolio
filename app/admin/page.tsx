@@ -550,14 +550,14 @@ function GalleryPanel({ data, setData }: { data: SiteData; setData: (d: SiteData
             </button>
             <button
               onClick={() => renameCategory(cat)}
-              className="p-1.5 rounded-lg text-zinc-700 hover:text-brand-cyan hover:bg-brand-cyan/20 opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+              className="p-1.5 rounded-lg text-zinc-500 hover:text-brand-cyan hover:bg-brand-cyan/20 transition-all cursor-pointer"
               title={`Rename ${cat}`}
             >
               <Pencil className="w-3 h-3" />
             </button>
             <button
               onClick={() => deleteCategory(cat)}
-              className="p-1.5 rounded-lg text-zinc-700 hover:text-red-400 hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+              className="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 hover:bg-red-900/20 transition-all cursor-pointer"
               title={`Delete ${cat}`}
             >
               <X className="w-3 h-3" />

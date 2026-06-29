@@ -1,12 +1,13 @@
 {
   "gallery": {
     "categories": [
-      "Designs"
+      "social media creatives",
+      "special day creatives"
     ],
     "projects": [
       {
         "id": 1782488116129,
-        "category": "Designs",
+        "category": "social media creatives",
         "companyName": "we five social media creatives",
         "description": "Designed engaging social media creatives for We Five Hypermarket, including promotional campaigns, festive posts, and branding content. Created visually compelling graphics that enhanced brand identity, increased audience engagement, and supported marketing campaigns across digital platforms.",
         "coverImage": "/uploads/1782556945086-Minimal-Instagram-Post-Scene-Mockup.png",
@@ -25,12 +26,19 @@
           "/uploads/1782557008927-we_five_march_poster_1.png",
           "/uploads/1782557012427-we_five_march_poster_3.png",
           "/uploads/1782557015743-we_five_march_poster_5.png",
-          "/uploads/1782557019834-WE_FIVE_MAY_POSTER_1.png"
+          "/uploads/1782557019834-WE_FIVE_MAY_POSTER_1.png",
+          "/uploads/1782742038483-we_five__July_Poster_1.jpg",
+          "/uploads/1782742038914-we_five__July_Poster_3.jpg",
+          "/uploads/1782742039009-we_five__July_Poster_4.jpg",
+          "/uploads/1782742039128-we_five__July_Poster_5.jpg",
+          "/uploads/1782742039309-Wefive_June_Poster_1.jpg",
+          "/uploads/1782742039464-Wefive_June_Poster_2.jpg",
+          "/uploads/1782742039868-Wefive_June_Poster_5.jpg"
         ]
       },
       {
         "id": 1782560736013,
-        "category": "Designs",
+        "category": "social media creatives",
         "companyName": "Fiesta social media creatives",
         "description": "Designed high-impact social media creatives for Fiesta Sports Shop, including sports product promotions, campaign visuals, branding materials, and seasonal advertisements. Delivered engaging, brand-focused designs that boosted online visibility, customer engagement, and marketing performance across digital platforms.",
         "coverImage": "/uploads/1782560706880-dss.png",
@@ -55,7 +63,7 @@
       },
       {
         "id": 1782561585159,
-        "category": "Designs",
+        "category": "social media creatives",
         "companyName": "Noumi social media creatives",
         "description": "Created engaging social media creatives for Noumi Food Production, including product promotions, branding visuals, advertising campaigns, and seasonal marketing content. Produced high-quality designs that strengthened brand presence, increased audience engagement, and supported digital marketing initiatives.",
         "coverImage": "/uploads/1782561565429-no.png",
@@ -75,7 +83,7 @@
       },
       {
         "id": 1782562180756,
-        "category": "Designs",
+        "category": "social media creatives",
         "companyName": "Pureh2o social media creatives",
         "description": "Designed engaging social media creatives for PureH2O Water Purifier, creating high-quality promotional graphics, product advertisements, campaign visuals, and brand-focused content. Ensured consistent visual branding and developed creative designs that increased audience engagement and effectively communicated product benefits across digital platforms.",
         "coverImage": "/uploads/1782562051701-pure_h2o.png",
@@ -99,7 +107,7 @@
       },
       {
         "id": 1782564598621,
-        "category": "Designs",
+        "category": "social media creatives",
         "companyName": "Crown build social media creatives",
         "description": "Created impactful social media creatives for Crown Build Education Institute, designing promotional posts, admission campaigns, course advertisements, event graphics, and brand visuals. Delivered engaging, high-quality designs that strengthened the institute's online presence, maintained brand consistency, and effectively connected with prospective students.",
         "coverImage": "/uploads/1782564591040-dv.png",
@@ -110,6 +118,133 @@
           "/uploads/1782564168801-Crown_build_march_poster_6.png",
           "/uploads/1782564171550-Crown_build_march_poster_1.png",
           "/uploads/1782564174196-Crown_build_march_poster_2-1.png"
+        ]
+      },
+      {
+        "id": 1782739361275,
+        "category": "social media creatives",
+        "companyName": "Core Fix Lab social media creatives",
+        "description": "Designed engaging social media creatives for CORE FIX LAB Laptop Service Shop, creating promotional posts, service advertisements, repair offers, and brand-focused visuals. consistent designs that enhanced the shop's online presence, showcased technical services, and increased customer engagement across digital platforms.",
+        "coverImage": "/uploads/1782739230820-2222.png",
+        "images": [
+          "/uploads/1782739214896-CORE_FIX_LAB__MARCH_POSTER_1.png",
+          "/uploads/1782739215214-CORE_FIX_LAB__MARCH_POSTER_2.png",
+          "/uploads/1782739215644-core_fix_lab_poster_fab_4.png",
+          "/uploads/1782739215952-jan_poster_3.png",
+          "/uploads/1782739216433-jan_poster_4.png",
+          "/uploads/1782739216830-CORE_FIX_LAB__APRIL_POSTER_1.png",
+          "/uploads/1782739217237-CORE_FIX_LAB__APRIL_POSTER_2.png",
+          "/uploads/1782739217685-CORE_FIX_LAB__MARCH_POSTER_3.png"
+        ]
+      },
+      {
+        "id": 1782739631571,
+        "category": "social media creatives",
+        "companyName": "GI solar social media creatives",
+        "description": "Designed professional social media creatives for GI Solar, promoting Tata Solar Panel installation services through engaging promotional posts, campaign visuals, service advertisements, and brand-focused graphics. Created visually compelling content that enhanced brand awareness, communicated clean energy solutions, and maintained a consistent, professional brand identity across digital platforms.",
+        "coverImage": "/uploads/1782739585741-TATA.png",
+        "images": [
+          "/uploads/1782739570419-2.png",
+          "/uploads/1782739570970-FAB_POSTER_GI_SOLAR_1.png",
+          "/uploads/1782739571520-FAB_POSTER_GI_SOLAR_2.png",
+          "/uploads/1782739571839-FAB_POSTER_GI_SOLAR_3.png",
+          "/uploads/1782739572387-gi_solar_poster_march__1.png",
+          "/uploads/1782739572866-gi_solar_poster_march__2.png",
+          "/uploads/1782739573517-JAN_POSTER_2.png",
+          "/uploads/1782739574835-JAN_POSTER_3.png",
+          "/uploads/1782739575231-TATA_power_solaroof_poster_2.png",
+          "/uploads/1782739575960-TATA_power_solaroof_poster.png",
+          "/uploads/1782739576539-WhatsApp_Image_2025-12-18_at_6.05.26_PM.png"
+        ]
+      },
+      {
+        "id": 1782739982469,
+        "category": "social media creatives",
+        "companyName": "Botgi Automation social media creatives",
+        "description": "Designed engaging social media creatives for CORE FIX LAB Laptop Service Shop, creating promotional posts, service advertisements, repair offers, and brand-focused visuals. Produced high-quality, consistent designs that enhanced the shop's online presence, showcased technical services, and increased customer engagement across digital platforms.",
+        "coverImage": "/uploads/1782739935987-BOT_GI.png",
+        "images": [
+          "/uploads/1782739925946-Botgi_Automation_march_poster_1.png",
+          "/uploads/1782739926432-Botgi_Automation_march_poster_3.png",
+          "/uploads/1782739926870-Botgi_Automation_march_poster_4.png",
+          "/uploads/1782739927415-Botgi_Automation_march_poster_5.png",
+          "/uploads/1782739927980-Botgi_Automation_march_poster_6.png"
+        ]
+      },
+      {
+        "id": 1782741905799,
+        "category": "social media creatives",
+        "companyName": "Bot Gi social media creatives",
+        "description": "Designed creative social media content for BOT GI, including promotional posts. Delivered visually engaging, brand-consistent designs that enhanced digital presence",
+        "coverImage": "/uploads/1782741737529-Minimal-Instagram-Post-Scene-Mockup-Recovered-1.png",
+        "images": [
+          "/uploads/1782741690897-WhatsApp_Image_2026-06-29_at_7.16.19_PM.jpeg",
+          "/uploads/1782741719184-bit_jun_poster_2_4_5_size_.jpg",
+          "/uploads/1782741719635-bit_jun_poster_3.png",
+          "/uploads/1782741719846-bit_jun_poster_4.jpg",
+          "/uploads/1782741720411-bit_jun_poster_5.png",
+          "/uploads/1782741720945-BOTGI_INSTITUTE_OF_TECHNOLOGY___Digital_Marketing_Course___POSTER.png"
+        ]
+      },
+      {
+        "id": 1782742782940,
+        "category": "special day creatives",
+        "companyName": "ramadan",
+        "description": "",
+        "coverImage": "/uploads/1782742715607-Minimal-Instagram-Post-Scene-Mockup-Recovered-Recovered-2.png",
+        "images": [
+          "/uploads/1782742745288-Bot_gi_ramadan_poster.png",
+          "/uploads/1782742746209-botgi_automation__ramadan_poster.png",
+          "/uploads/1782742746930-GI_SOLAR__ramadan_poster.png",
+          "/uploads/1782742747236-Bot_gi_ramadan_poster-1_-_Copy.png",
+          "/uploads/1782742748289-core_fix_lab__ramadan_poster.png",
+          "/uploads/1782742748944-New_Brilliant_ramadan_poster_2.png",
+          "/uploads/1782742749517-WE_FIVE__ramadan_poster__full_hd.png"
+        ]
+      },
+      {
+        "id": 1782743386071,
+        "category": "special day creatives",
+        "companyName": "EID",
+        "description": "",
+        "coverImage": "/uploads/1782743370222-Minimal-Instagram-Post-Scene-Mockup-Recovered-Recovered-1.png",
+        "images": [
+          "/uploads/1782742885302-kh_eid_poster.png",
+          "/uploads/1782742886186-WE_FIVE__EID_POSTER.png",
+          "/uploads/1782742886688-alar_eid_poster_2.png",
+          "/uploads/1782742887448-botgi_automation_eid_poster.png",
+          "/uploads/1782742887834-Crownbuild_.png",
+          "/uploads/1782742887935-Fiesta_Eid_Poster.jpg"
+        ]
+      },
+      {
+        "id": 1782749740791,
+        "category": "special day creatives",
+        "companyName": "Vishu",
+        "description": "",
+        "coverImage": "/uploads/1782749722167-Minimal-Instagram-Post-Scene-Mockup-Recovered-Recovered.png",
+        "images": [
+          "/uploads/1782749691974-5916809757031337319_121.jpg",
+          "/uploads/1782749692190-5916768009949220254_121.jpg",
+          "/uploads/1782749692301-5914659790892240306_121.jpg",
+          "/uploads/1782749710698-vishu_poster_bot_gi.png",
+          "/uploads/1782749712873-vishu_poster_Crownbuild.png"
+        ]
+      },
+      {
+        "id": 1782751355838,
+        "category": "special day creatives",
+        "companyName": "Kerala Piravi",
+        "description": "",
+        "coverImage": "/uploads/1782751317133-1111.png",
+        "images": [
+          "/uploads/1782751294565-Artboard_1.png",
+          "/uploads/1782751295855-Aslam_mysteel_kerala_piravi_poster.png",
+          "/uploads/1782751296892-EVENTS--__EVENT_PLANNERS_Kerala_piravi_poster.png",
+          "/uploads/1782751297240-gold_palace_kerala_piravi_poster.png",
+          "/uploads/1782751298445-ignitio_Kerala_piravi_poster.png",
+          "/uploads/1782751299084-Mundath_dental_clinic_kerala_piravi__poster_2.png",
+          "/uploads/1782751300569-Mundath_dental_clinic_piravi_poster_1.png"
         ]
       }
     ]
