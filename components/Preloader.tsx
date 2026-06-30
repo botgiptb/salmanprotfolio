@@ -4,82 +4,66 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const LETTERS = ["S", "A", "L", "M", "A", "N"];
-const TOTAL_MS = 3200;
+const TOTAL_MS = 3000;
 
 const STATUSES = [
-  { at: 0,  text: "INITIALIZING CREATIVE ENVIRONMENT" },
-  { at: 28, text: "LOADING PORTFOLIO ASSETS"           },
-  { at: 58, text: "CALIBRATING COLOR SPACES & LUTS"    },
-  { at: 85, text: "RENDERING FINAL COMPOSITION"        },
+  { at: 0,  text: "INITIALIZING ENVIRONMENT"  },
+  { at: 30, text: "LOADING PORTFOLIO ASSETS"   },
+  { at: 60, text: "CALIBRATING COLOR SPACES"   },
+  { at: 88, text: "RENDERING COMPOSITION"      },
 ];
 
 export default function Preloader() {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible]   = useState(true);   // ← optimistic: always show; hide after check
   const [progress, setProgress] = useState(0);
-  const dismissedRef = useRef(false);
-
-  const dismiss = () => {
-    if (dismissedRef.current) return;
-    dismissedRef.current = true;
-    try { sessionStorage.setItem("preloader-done", "1"); } catch (_) {}
-    setProgress(100);
-    setTimeout(() => setVisible(false), 450);
-  };
+  const doneRef = useRef(false);
 
   useEffect(() => {
-    // Never show on admin routes (no usePathname — avoids Suspense requirement)
-    if (typeof window !== "undefined" && window.location.pathname.startsWith("/admin")) {
+    // 1. Skip on admin pages
+    if (window.location.pathname.startsWith("/admin")) {
+      setVisible(false);
       return;
     }
-
-    // Skip if already played this session
+    // 2. Skip if already played this session
     try {
       if (sessionStorage.getItem("preloader-done")) {
+        setVisible(false);
         return;
       }
     } catch (_) {}
 
-    // Show preloader
-    setVisible(true);
+    // 3. Run counter
+    doneRef.current = false;
+    const STEP = 25;                         // tick every 25 ms
+    const totalSteps = Math.ceil(TOTAL_MS / STEP);
+    let tick = 0;
+
+    const dismiss = () => {
+      if (doneRef.current) return;
+      doneRef.current = true;
+      try { sessionStorage.setItem("preloader-done", "1"); } catch (_) {}
+      setProgress(100);
+      setTimeout(() => setVisible(false), 500);
+    };
+
+    const id = setInterval(() => {
+      tick++;
+      const pct = Math.min(Math.round((tick / totalSteps) * 100), 100);
+      setProgress(pct);
+      if (pct >= 100) { clearInterval(id); dismiss(); }
+    }, STEP);
+
+    // Absolute failsafe: dismiss after 6 s no matter what
+    const fs = setTimeout(dismiss, 6000);
+
+    return () => { clearInterval(id); clearTimeout(fs); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Run the counter whenever visible flips to true
-  useEffect(() => {
-    if (!visible) return;
-
-    dismissedRef.current = false;
-    setProgress(0);
-
-    const intervalMs = 30;
-    const steps = Math.ceil(TOTAL_MS / intervalMs);
-    let current = 0;
-
-    const interval = setInterval(() => {
-      current += 1;
-      const pct = Math.min(Math.round((current / steps) * 100), 100);
-      setProgress(pct);
-      if (pct >= 100) {
-        clearInterval(interval);
-        setTimeout(dismiss, 350);
-      }
-    }, intervalMs);
-
-    // Hard failsafe — never stay longer than 6 s
-    const failsafe = setTimeout(dismiss, 6000);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(failsafe);
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible]);
-
-  const activeLetterIdx = Math.min(
-    Math.floor((progress / 100) * LETTERS.length),
-    LETTERS.length - 1
-  );
-  let statusText = STATUSES[0].text;
-  for (const s of STATUSES) { if (progress >= s.at) statusText = s.text; }
+  /* ── Derived display values ── */
+  const lit = Math.min(Math.floor((progress / 100) * LETTERS.length), LETTERS.length - 1);
+  let status = STATUSES[0].text;
+  for (const s of STATUSES) { if (progress >= s.at) status = s.text; }
 
   return (
     <AnimatePresence>
@@ -87,112 +71,115 @@ export default function Preloader() {
         <motion.div
           key="preloader"
           initial={{ opacity: 1 }}
-          exit={{ y: "-100%", transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
-          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#060608] text-zinc-100 select-none overflow-hidden"
+          exit={{ y: "-100%", transition: { duration: 0.75, ease: [0.76, 0, 0.24, 1] } }}
+          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#050507] select-none overflow-hidden"
         >
-          {/* ── Ambient glow blobs ── */}
+          {/* ── Ambient blobs ── */}
           <motion.div
-            animate={{ scale: [1, 1.2, 1], opacity: [0.08, 0.18, 0.08] }}
+            animate={{ scale: [1, 1.25, 1], opacity: [0.1, 0.22, 0.1] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-brand-purple/25 blur-[120px] pointer-events-none"
+            className="absolute w-[480px] h-[480px] rounded-full bg-brand-purple/20 blur-[130px] pointer-events-none -top-10 -left-20"
           />
           <motion.div
-            animate={{ scale: [1.1, 1, 1.1], opacity: [0.06, 0.14, 0.06] }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-brand-cyan/20 blur-[120px] pointer-events-none"
+            animate={{ scale: [1.1, 1, 1.1], opacity: [0.06, 0.16, 0.06] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+            className="absolute w-[380px] h-[380px] rounded-full bg-brand-cyan/15 blur-[120px] pointer-events-none bottom-0 right-0"
           />
 
-          {/* ── Subtle grid ── */}
+          {/* ── Grid dots ── */}
           <div
-            className="absolute inset-0 pointer-events-none"
+            className="absolute inset-0 pointer-events-none opacity-30"
             style={{
-              backgroundImage:
-                "linear-gradient(rgba(139,92,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,0.04) 1px, transparent 1px)",
-              backgroundSize: "60px 60px",
+              backgroundImage: "radial-gradient(circle, rgba(139,92,246,0.15) 1px, transparent 1px)",
+              backgroundSize: "40px 40px",
             }}
           />
 
           {/* ── Corner brackets ── */}
-          <div className="absolute top-8 left-8 w-8 h-8 border-t-2 border-l-2 border-brand-purple/40 rounded-tl" />
-          <div className="absolute top-8 right-8 w-8 h-8 border-t-2 border-r-2 border-brand-cyan/40 rounded-tr" />
-          <div className="absolute bottom-20 left-8 w-8 h-8 border-b-2 border-l-2 border-brand-cyan/40 rounded-bl" />
-          <div className="absolute bottom-20 right-8 w-8 h-8 border-b-2 border-r-2 border-brand-purple/40 rounded-br" />
+          {[
+            "top-6 left-6 border-t-2 border-l-2 border-brand-purple/50 rounded-tl",
+            "top-6 right-6 border-t-2 border-r-2 border-brand-cyan/50 rounded-tr",
+            "bottom-16 left-6 border-b-2 border-l-2 border-brand-cyan/50 rounded-bl",
+            "bottom-16 right-6 border-b-2 border-r-2 border-brand-purple/50 rounded-br",
+          ].map((cls) => (
+            <div key={cls} className={`absolute w-7 h-7 ${cls}`} />
+          ))}
 
-          {/* ── Main content ── */}
-          <div className="relative w-full max-w-[500px] px-8 flex flex-col items-center gap-10">
+          {/* ── Content ── */}
+          <div className="relative flex flex-col items-center gap-8 w-full max-w-[480px] px-8">
 
-            {/* ── SALMAN letters ── */}
-            <div className="flex items-end gap-3 md:gap-5">
-              {LETTERS.map((l, i) => {
-                const lit = i <= activeLetterIdx && progress > 0;
-                return (
-                  <motion.span
-                    key={i}
-                    animate={{
-                      color: lit ? "#f4f4f5" : "rgba(39,39,42,0.18)",
-                      textShadow: lit
-                        ? "0 0 30px rgba(139,92,246,0.6), 0 0 60px rgba(6,182,212,0.25)"
-                        : "none",
-                      y: lit ? -4 : 0,
-                    }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="font-display text-6xl md:text-8xl font-black leading-none"
-                  >
-                    {l}
-                  </motion.span>
-                );
-              })}
+            {/* Letters */}
+            <div className="flex items-center gap-2 md:gap-4">
+              {LETTERS.map((l, i) => (
+                <motion.span
+                  key={i}
+                  animate={{
+                    color:      i <= lit && progress > 0 ? "#f4f4f5" : "rgba(39,39,42,0.16)",
+                    textShadow: i <= lit && progress > 0
+                      ? "0 0 28px rgba(139,92,246,0.65), 0 0 55px rgba(6,182,212,0.3)"
+                      : "none",
+                    y: i <= lit && progress > 0 ? -5 : 0,
+                  }}
+                  transition={{ duration: 0.28, ease: "easeOut" }}
+                  className="font-display text-[clamp(2.8rem,10vw,6rem)] font-black leading-none"
+                >
+                  {l}
+                </motion.span>
+              ))}
             </div>
 
-            {/* ── Divider with pulsing dot ── */}
-            <div className="w-full flex items-center gap-4">
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent to-zinc-800/60" />
-              <motion.div
-                animate={{ scale: [1, 1.6, 1], opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 1.2, repeat: Infinity }}
-                className="w-1.5 h-1.5 rounded-full bg-brand-cyan"
+            {/* Thin rule */}
+            <div className="w-full flex items-center gap-3">
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
+              <motion.span
+                animate={{ opacity: [0.4, 1, 0.4], scale: [1, 1.5, 1] }}
+                transition={{ duration: 1.1, repeat: Infinity }}
+                className="w-1.5 h-1.5 rounded-full bg-brand-cyan inline-block"
               />
-              <div className="flex-1 h-px bg-gradient-to-l from-transparent to-zinc-800/60" />
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
             </div>
 
-            {/* ── Progress group ── */}
-            <div className="w-full flex flex-col items-center gap-4">
-
-              {/* Status + percentage */}
-              <div className="w-full flex justify-between items-baseline px-1">
-                <span className="font-heading text-[9px] font-bold tracking-[0.2em] uppercase text-zinc-500">
-                  {statusText}
+            {/* Progress block */}
+            <div className="w-full flex flex-col gap-3">
+              {/* Status row */}
+              <div className="flex justify-between items-center">
+                <span className="text-[8px] font-heading font-bold tracking-[0.22em] uppercase text-zinc-600">
+                  {status}
                 </span>
-                <span className="font-heading font-black text-sm tracking-widest text-zinc-200 tabular-nums">
+                <span className="font-heading font-black text-xs tracking-widest text-zinc-300 tabular-nums">
                   {progress}<span className="text-brand-cyan">%</span>
                 </span>
               </div>
 
-              {/* Progress track */}
-              <div className="w-full h-[2px] bg-zinc-900 rounded-full overflow-visible relative">
+              {/* Bar */}
+              <div className="w-full h-[2px] bg-zinc-900 rounded-full overflow-visible">
                 <div
                   style={{ width: `${progress}%` }}
-                  className="h-full bg-gradient-to-r from-brand-purple via-violet-400 to-brand-cyan rounded-full relative transition-[width] duration-75 ease-linear"
+                  className="h-full rounded-full bg-gradient-to-r from-brand-purple via-violet-400 to-brand-cyan relative transition-[width] duration-[25ms] ease-linear"
                 >
-                  <span className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-cyan shadow-[0_0_8px_#06b6d4] -mr-1" />
+                  {progress > 1 && (
+                    <span className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-cyan shadow-[0_0_10px_#06b6d4,0_0_20px_rgba(6,182,212,0.5)]" />
+                  )}
                 </div>
               </div>
 
-              {/* Version label */}
-              <p className="font-heading text-[8px] font-semibold tracking-[0.3em] uppercase text-zinc-700">
-                Creative Studio Suite · v1.5
+              <p className="text-center font-heading text-[7px] font-semibold tracking-[0.35em] uppercase text-zinc-700">
+                Creative Studio · v2.0
               </p>
             </div>
           </div>
 
-          {/* ── Skip button ── */}
+          {/* Skip */}
           <button
-            onClick={dismiss}
-            className="absolute bottom-10 px-5 py-2 rounded-lg border border-zinc-800 bg-zinc-950/70 text-[9px] font-heading font-bold tracking-[0.25em] uppercase text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 transition-all duration-200 cursor-pointer backdrop-blur-sm"
+            onClick={() => {
+              doneRef.current = true;
+              try { sessionStorage.setItem("preloader-done", "1"); } catch (_) {}
+              setVisible(false);
+            }}
+            className="absolute bottom-8 px-5 py-2 rounded-lg border border-zinc-800/80 bg-zinc-950/60 text-[8px] font-heading font-bold tracking-[0.3em] uppercase text-zinc-500 hover:text-zinc-200 hover:border-zinc-600 cursor-pointer backdrop-blur-sm transition-all duration-200"
           >
             Skip Intro
           </button>
-
         </motion.div>
       )}
     </AnimatePresence>
