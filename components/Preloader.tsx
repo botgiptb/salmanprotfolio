@@ -24,7 +24,7 @@ export default function Preloader() {
 
   useEffect(() => {
     // Never show on /admin
-    if (window.location.pathname.startsWith("/admin")) {
+    if (typeof window !== "undefined" && window.location.pathname.startsWith("/admin")) {
       setMounted(false);
       return;
     }
@@ -47,11 +47,12 @@ export default function Preloader() {
   return (
     <div
       style={{
-        transition: "transform 0.8s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.8s cubic-bezier(0.76, 0, 0.24, 1)"
+        transition: "transform 0.85s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.85s cubic-bezier(0.76, 0, 0.24, 1)",
+        transform: fade ? "translateY(-100%)" : "translateY(0%)",
+        opacity: fade ? 0 : 1,
+        pointerEvents: fade ? "none" : "auto",
       }}
-      className={`fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#050507] select-none overflow-hidden ${
-        fade ? "translate-y-[-100%] opacity-0 pointer-events-none" : "translate-y-0 opacity-100"
-      }`}
+      className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#050507] select-none overflow-hidden"
     >
       {/* ── Ambient blobs ── */}
       <div className="absolute w-[500px] h-[500px] rounded-full bg-brand-purple/15 blur-[140px] pointer-events-none top-0 left-0 -translate-x-1/3 -translate-y-1/3 animate-float-pulse" />
@@ -104,7 +105,7 @@ export default function Preloader() {
           {/* Label row */}
           <div className="flex justify-between items-center px-0.5">
             <span className="pl-status text-[8px] font-heading font-bold tracking-[0.22em] uppercase text-zinc-600" />
-            <span className="pl-pct font-heading font-black text-xs tracking-widest text-zinc-300 tabular-nums" />
+            <span className="pl-pct text-xs font-heading font-black tracking-widest text-zinc-300 tabular-nums" />
           </div>
 
           {/* CSS-driven bar ── */}
